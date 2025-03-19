@@ -1,0 +1,5 @@
+/.venv
+/__pycache__
+/generated_audio.mp3
+/user_recording.wav
+/cred.txt
