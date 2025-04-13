@@ -12,17 +12,16 @@ For example, if your api key or value for one of the info down below was apple, 
 
 # used to generate AI response
 OPENROUTER_KEY: str = ""
-LLM_model: str = "google/gemini-2.0-flash-exp:free" # suggested
+LLM_model: str = "google/gemini-2.0-flash-exp:free" # suggested 
 
 '''
- this determines how much of the conversation the ai remembers. 1 out of limit is the prompt/instructions describing personality. 
- each remaining value counts as a singular message; in other words a value of 3 would make AI remember one exchange between user and AI.
- +1 for the prompt, +2 is the singular exchange'
+ this determines how much of the conversation the ai remembers. 
+ default value is 5, so the ai remembers the past 5 exchanges
 '''
-context_limit: int = 11
+context_limit: int = 5
 
 # here you describe the personality of the AI or even try to have it roleplay as a character. I suggest testing this out on the OpenRouter website first
-AI_personality: str = "You are a nice person." 
+AI_personality: str = "" 
 
 # [OPTIONAL]. used for text to speech. If api key is left empty as "" it wont attempt to get speech to text response
 ELEVENLABS_API_KEY: str = ""

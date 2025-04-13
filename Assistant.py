@@ -87,7 +87,7 @@ class Assistant():
                 sentiment = self.handleVoiceMessageFromUser()
 
             # Send to unity the sentiment upon success and "failed" upon failure
-            message = f"{sentiment} no stt" if self.ELEVENLABS_API_KEY == "" else sentiment
+            message = f"{sentiment} no tts" if self.ELEVENLABS_API_KEY == "" else sentiment
             client_socket.send(message.encode())
 
 
@@ -181,7 +181,7 @@ class Assistant():
 
         # should be at context_limit + 2 due to user message and response
         # if past length limit, pop oldest exchange from context
-        if len(self.context) > self.context_limit:
+        if (len(self.context) - 1) // 2 > self.context_limit:
             prompt = self.context.popleft()
             self.context.popleft(); self.context.popleft(); # pop oldest exchange from context 
             self.context.appendleft(prompt) # readd the prompt as it was popped earlier
