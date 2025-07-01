@@ -5,3 +5,6 @@
 /cred.txt
 /chat_context.txt
 /log.txt
+/chat_context.json
+/chathistory.json
+/error_log.txt
