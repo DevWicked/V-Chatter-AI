@@ -17,6 +17,7 @@ class Assistant():
     language_model_provider -> determines if you're using OpenAI or OpenRouter as your LLM service
     Openrouter_key-> api key for openrouter
     OpenAI_Key -> api key for openai
+    Ollama_Port -> port number ollama server is running on
     llm_model-> specifies the llm name
 
     context_limit: integer -> the number of previous exchanges to remember in conversation. 
@@ -35,16 +36,29 @@ class Assistant():
     """
     
     # set up class variables here to be used in functions this constructor is so freaking ugly
-    def __init__(self, language_model_provider, OPENROUTER_KEY, OPENAI_KEY, LLM_model, context_limit, AI_personality, ai_language, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, websocket_host, websocket_port, chat_data_save_folder, allowedInactiveMinutes):
+    def __init__(self, language_model_provider, OPENROUTER_KEY, OPENAI_KEY, Ollama_Port, LLM_model, context_limit, AI_personality, ai_language, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, websocket_host, websocket_port, chat_data_save_folder, allowedInactiveMinutes):
         
         self.chat_data_save_folder = chat_data_save_folder
 
         # LLM setup
         self.OPENROUTER_KEY = OPENROUTER_KEY 
         self.OPENAI_KEY = OPENAI_KEY
+        llm_api_key = ""
+        llm_base_url = ""
+
+        if language_model_provider == 0: # OpenAI
+            llm_api_key = OPENAI_KEY
+            llm_base_url = "https://api.openai.com/v1"
+        elif language_model_provider == 1: # OpenRouter
+            llm_api_key = OPENROUTER_KEY
+            llm_base_url = "https://openrouter.ai/api/v1"
+        else: # Ollama
+            llm_api_key = "ollama"
+            llm_base_url = f"http://localhost:{Ollama_Port}/v1"
+
         self.LLM_Client = OpenAI(
-            base_url= "https://api.openai.com/v1" if language_model_provider == 0 else "https://openrouter.ai/api/v1",
-            api_key= OPENAI_KEY if language_model_provider == 0 else OPENROUTER_KEY
+            base_url= llm_base_url,
+            api_key= llm_api_key
         )
         self.LLM_model = LLM_model
 
@@ -325,9 +339,10 @@ class Assistant():
             )
 
             return completion.choices[0].message.content
-        
-        except:
+
+        except Exception as err:
             print("Failed to generate ai response \n")
+            print(err)
             return ""
     
 
@@ -351,9 +366,10 @@ class Assistant():
                     file.write(chunk)
             
             return True
-        
-        except:
+
+        except Exception as err:
             print("Failed to generate tts mp3 file for ai response \n")
+            print(err)
             return False
         
 
@@ -364,7 +380,7 @@ class Assistant():
             audio_file = open(self.chat_data_save_folder + "/user_recording.wav", "rb")
             speechText = self.OpenAI_Whisper_Client.audio.transcriptions.create(model="whisper-1", file=audio_file,)
             return speechText.text
-        
+
         except Exception as e:
             print(e)
             print("Failed to transcribe user voice input \n")

@@ -22,7 +22,7 @@ websocket_port: int = 8765
 # Chat data save folder [MANDATORY] -------------------------------------------------------------------------------------------------------------------------------
 
 # use this folder by default. you can create a new folder where you wish for your chat data to be saved to, and then paste its location (Path) here
-# MAKE SURE it's the same folder that's selected for your chat date save folder in the v-chatter app (settings -> chat)
+# It must be the same folder that's selected for your chat date save folder in the v-chatter app (settings -> chat)
 chat_data_save_folder: str = "./" 
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,19 +31,22 @@ chat_data_save_folder: str = "./"
 
 # Language Model Section [MANDATORY] ------------------------------------------------------------------------------------------------------------------------------
 
-# Choose if you're using OpenAI or OpenRouter for the language model service. OpenAI = 0, OpenRouter = 1
+# Choose if you're using OpenAI or OpenRouter for the language model service. OpenAI = 0, OpenRouter = 1, Ollama = 2
 language_model_provider : int = 0
 
-# you need to fill this out if you chose open ai for the language model provider and/or if you want speech to text
-OPENAI_KEY: str = ""
+# OpenAI Api Key. you need to fill this out if you chose OpenAi for the language model provider and/or if you want speech to text
+OPENAI_API_KEY: str = ""
 
-# you need to fill this out if you chose open router for the lanuage model provider
-OPENROUTER_KEY: str = ""
+# OpenRouter Api Key. you need to fill this out if you chose OpenRouter for the lanuage model provider
+OPENROUTER_API_KEY: str = ""
+
+# The port number your Ollama server is running on your computer. You need to fill this out if you chose Ollama for the lanuage model provider
+Ollama_Port: int = 11434 # the default 
 
 # specify the name of the language model you're using
 language_model_name: str = "" 
 
-# this determines how much of the conversation the ai remembers.  default value is 5, so the ai remembers the past 5 exchanges. A user message and ai response counts as 1 exchange
+# this determines how much of the conversation the ai remembers. default value is 5, so the ai remembers the past 5 exchanges. A user message and ai response counts as 1 exchange
 context_limit: int = 5
 
 # here you describe the personality of the AI or even try to have it roleplay as a character.
@@ -70,13 +73,13 @@ ELEVENLABS_VOICE_ID: str = ""
 
 # Speech to Text Section [OPTIONAL]. If OpenAI api key is left empty as "" it wont attempt to get transcribe speech from user -------------------------------------------
 
-# PLEASE fill in the OpenAI key in the Language Model Section if you wish to have speech to text!
+# PLEASE fill in the OpenAI key in the Language Model Section if you want speech to text!
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
 # don't touch this
-assistant = Assistant(language_model_provider, OPENROUTER_KEY, OPENAI_KEY, language_model_name, context_limit, AI_personality, ai_language, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, websocket_host, websocket_port, chat_data_save_folder, allowed_inactive_minutes)
+assistant = Assistant(language_model_provider, OPENROUTER_API_KEY, OPENAI_API_KEY, Ollama_Port, language_model_name, context_limit, AI_personality, ai_language, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, websocket_host, websocket_port, chat_data_save_folder, allowed_inactive_minutes)
 asyncio.run(assistant.Start())
 
